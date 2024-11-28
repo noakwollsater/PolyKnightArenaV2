@@ -8,6 +8,8 @@ public class TransformCamera : MonoBehaviour
 
     [SerializeField] private Image gender;
 
+    [SerializeField] private GameObject Player;
+
     [SerializeField] private Button headBtn;
     [SerializeField] private Button torsoBtn;
     [SerializeField] private Button hipBtn;
@@ -25,6 +27,8 @@ public class TransformCamera : MonoBehaviour
     [SerializeField] private GameObject HeadButtons;
     [SerializeField] private GameObject TorsoButtons;
     [SerializeField] private GameObject HipButtons;
+
+    private bool isZoomed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -47,6 +51,9 @@ public class TransformCamera : MonoBehaviour
         Camera.transform.position = new Vector3(75.815f, 6.369f, -56.687f);
         Camera.fieldOfView = 60;
 
+        isZoomed = false;
+        ZoomedAnimation();
+
         HeadButtons.SetActive(false);
         TorsoButtons.SetActive(false);
         HipButtons.SetActive(false);
@@ -63,6 +70,9 @@ public class TransformCamera : MonoBehaviour
         Camera.transform.position = new Vector3(75.088f, 6.653f, -56.734f);
         Camera.fieldOfView = 32;
 
+        isZoomed = true;
+        ZoomedAnimation();
+
         HeadButtons.SetActive(true);
         TorsoButtons.SetActive(false);
         HipButtons.SetActive(false);
@@ -78,6 +88,9 @@ public class TransformCamera : MonoBehaviour
         Camera.transform.position = new Vector3(75.088f, 6.22f, -56.734f);
         Camera.fieldOfView = 46;
 
+        isZoomed = true;
+        ZoomedAnimation();
+
         TorsoButtons.SetActive(true);
         HeadButtons.SetActive(false);
         HipButtons.SetActive(false);
@@ -92,6 +105,9 @@ public class TransformCamera : MonoBehaviour
     {
         Camera.transform.position = new Vector3(75.088f, 5.56f, -56.734f);
         Camera.fieldOfView = 46;
+
+        isZoomed = true;
+        ZoomedAnimation();
 
         HipButtons.SetActive(true);
         HeadButtons.SetActive(false);
@@ -134,5 +150,17 @@ public class TransformCamera : MonoBehaviour
 
         hipBtn.onClick.RemoveAllListeners();
         hipBtn.onClick.AddListener(hipAction);
+    }
+
+    private void ZoomedAnimation()
+    {
+        if (isZoomed)
+        {
+            Player.GetComponent<Animator>().runtimeAnimatorController = Resources.Load("Animations/CharacterZoomed") as RuntimeAnimatorController;
+        }
+        else if (!isZoomed)
+        {
+            Player.GetComponent<Animator>().runtimeAnimatorController = Resources.Load("Animations/CharacterCustomize") as RuntimeAnimatorController;
+        }
     }
 }

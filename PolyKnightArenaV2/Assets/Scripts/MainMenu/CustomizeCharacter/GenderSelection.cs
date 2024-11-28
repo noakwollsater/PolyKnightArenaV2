@@ -10,6 +10,11 @@ public class GenderSelection : MonoBehaviour
     [SerializeField] private GameObject player; // Reference to the player object
     [SerializeField] private TransformCamera transformCamera; // Reference to TransformCamera script
 
+    [SerializeField] private Image headImage;  // Image to display the selected head
+    [SerializeField] private Image torsoImage; // Image to display the selected torso
+    [SerializeField] private Sprite[] head;    // Array of head
+    [SerializeField] private Sprite[] torso;   // Array of torso
+
     public static GenderSelection instance { get; private set; }
 
     private Transform maleParts;   // Reference to male body parts
@@ -68,9 +73,34 @@ public class GenderSelection : MonoBehaviour
     {
         // Update the button image to reflect the selected gender
         genderImage.sprite = isFemale ? genders[0] : genders[1];
+        Debug.Log($"Gender image updated to: {genderImage.sprite.name}");
+
+        // Update head and torso images
+        if (head.Length > 1 && headImage != null)
+        {
+            headImage.sprite = isFemale ? head[0] : head[1];
+            Debug.Log($"Head image updated to: {headImage.sprite.name}");
+        }
+        else
+        {
+            Debug.LogWarning("Head sprites or headImage is not properly set up.");
+        }
+
+        if (torso.Length > 1 && torsoImage != null)
+        {
+            torsoImage.sprite = isFemale ? torso[0] : torso[1];
+            Debug.Log($"Torso image updated to: {torsoImage.sprite.name}");
+        }
+        else
+        {
+            Debug.LogWarning("Torso sprites or torsoImage is not properly set up.");
+        }
 
         // Enable/disable body parts based on the selected gender
         if (femaleParts != null) femaleParts.gameObject.SetActive(isFemale);
         if (maleParts != null) maleParts.gameObject.SetActive(!isFemale);
+
+        Debug.Log($"Gender toggled. Female active: {isFemale}");
     }
+
 }

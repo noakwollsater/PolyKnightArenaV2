@@ -39,17 +39,36 @@ public class PartSelection : MonoBehaviour
     void Start()
     {
         // Initialize the state based on the current headImage sprite
+
+
+        // Add button listeners once
+        headbtn.onClick.AddListener(SelectHead);
+        firstWearbtn.onClick.AddListener(SelectFirstWear);
+        secondWearbtn.onClick.AddListener(SelectSecondWear);
+
+        facialbtn.onClick.AddListener(SelectFacial);
+        facialFirstWearbtn.onClick.AddListener(SelectFacialFirstWear);
+    }
+
+    void Update()
+    {
         if (headImage.sprite.name.Contains("Hair"))
         {
             isHair = true;
+            isHelmet = false;
+            isHat = false;
         }
         else if (headImage.sprite.name.Contains("Helmet"))
         {
             isHelmet = true;
+            isHat = false;
+            isHair = false;
         }
         else if (headImage.sprite.name.Contains("Hat"))
         {
             isHat = true;
+            isHelmet = false;
+            isHair = false;
         }
 
         if (facialImage.sprite.name.Contains("Beard"))
@@ -60,14 +79,6 @@ public class PartSelection : MonoBehaviour
         {
             isMask = true;
         }
-
-        // Add button listeners once
-        headbtn.onClick.AddListener(SelectHead);
-        firstWearbtn.onClick.AddListener(SelectFirstWear);
-        secondWearbtn.onClick.AddListener(SelectSecondWear);
-
-        facialbtn.onClick.AddListener(SelectFacial);
-        facialFirstWearbtn.onClick.AddListener(SelectFacialFirstWear);
     }
 
     void SelectHead()
@@ -87,32 +98,20 @@ public class PartSelection : MonoBehaviour
             Sprite tempSprite = headImage.sprite;
             headImage.sprite = firstWearImage.sprite;
             firstWearImage.sprite = tempSprite;
-
-            isHelmet = true;
-            isHair = false;
-            isHat = false;
         }
-        else if (isHelmet)
+        if (isHelmet)
         {
             // Swap headImage and firstWearImage sprites
             Sprite tempSprite = headImage.sprite;
             headImage.sprite = firstWearImage.sprite;
             firstWearImage.sprite = tempSprite;
-
-            isHat = true;
-            isHelmet = false;
-            isHair = false;
         }
-        else if (isHat)
+        if (isHat)
         {
             // Swap headImage and firstWearImage sprites
             Sprite tempSprite = headImage.sprite;
             headImage.sprite = firstWearImage.sprite;
             firstWearImage.sprite = tempSprite;
-
-            isHair = true;
-            isHelmet = false;
-            isHat = false;
         }
 
         Debug.Log($"After: isHair={isHair}, isHelmet={isHelmet}, isHat={isHat}");
@@ -130,10 +129,6 @@ public class PartSelection : MonoBehaviour
             Sprite tempSprite = headImage.sprite;
             headImage.sprite = secondWearImage.sprite;
             secondWearImage.sprite = tempSprite;
-
-            isHelmet = true;
-            isHair = false;
-            isHat = false;
         }
         else if (isHelmet)
         {
@@ -141,10 +136,6 @@ public class PartSelection : MonoBehaviour
             Sprite tempSprite = headImage.sprite;
             headImage.sprite = secondWearImage.sprite;
             secondWearImage.sprite = tempSprite;
-
-            isHat = true;
-            isHelmet = false;
-            isHair = false;
         }
         else if (isHat)
         {
@@ -152,10 +143,6 @@ public class PartSelection : MonoBehaviour
             Sprite tempSprite = headImage.sprite;
             headImage.sprite = secondWearImage.sprite;
             secondWearImage.sprite = tempSprite;
-
-            isHair = true;
-            isHelmet = false;
-            isHat = false;
         }
 
         Debug.Log($"After: isHair={isHair}, isHelmet={isHelmet}, isHat={isHat}");
