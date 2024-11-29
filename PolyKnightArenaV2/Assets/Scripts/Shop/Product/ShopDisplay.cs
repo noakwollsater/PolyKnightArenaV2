@@ -9,9 +9,9 @@ public class ShopDisplay : MonoBehaviour
 {
     public ShopInventory shopInventory;
     public GameObject productUIPrefab;
+    public GameObject FilterPanel;
     public Transform productContainer;
 
-    [SerializeField] private TMP_Text prompt;
     [SerializeField] private Button nextBtn;
     [SerializeField] private Button previousBtn;
     [SerializeField] private Button helmetFilter;
@@ -20,8 +20,7 @@ public class ShopDisplay : MonoBehaviour
     [SerializeField] private Button KneeFilter;
     [SerializeField] private Button HipFilter;
     [SerializeField] private Button MantleFilter;
-    [SerializeField] private Button[] AllFilter;
-
+    [SerializeField] private Button DisplayFilterBtn;
     [SerializeField] private Button HideProducts;
     [SerializeField] private Button ActiveHideProducts;
 
@@ -30,7 +29,7 @@ public class ShopDisplay : MonoBehaviour
     private ES3Settings settings;
 
     private int currentPage = 0;  // To track the current page
-    private int productsPerPage = 5;  // Number of products per page
+    private int productsPerPage = 28;  // Number of products per page
 
     private List<Product> originalProducts;
     private GameObject activeAllDisplayButton = null;
@@ -46,19 +45,7 @@ public class ShopDisplay : MonoBehaviour
             return;
         }
 
-        helmetFilter.onClick.AddListener(() => OnFilterButtonPressed("Helmet", helmetFilter));
-        ShoulderFilter.onClick.AddListener(() => OnFilterButtonPressed("Shoulder", ShoulderFilter));
-        ElbowFilter.onClick.AddListener(() => OnFilterButtonPressed("Elbow", ElbowFilter));
-        KneeFilter.onClick.AddListener(() => OnFilterButtonPressed("Knee", KneeFilter));
-        HipFilter.onClick.AddListener(() => OnFilterButtonPressed("Hip", HipFilter));
-        MantleFilter.onClick.AddListener(() => OnFilterButtonPressed("Mantle", MantleFilter));
-
-        HideProducts.onClick.AddListener(() => OnHideProducts());
-
-        foreach (Button button in AllFilter)
-        {
-            button.onClick.AddListener(() => FilterProducts("All"));
-        }
+        DisplayFilterBtn.onClick.AddListener(() => DisplayFilterPanel());
 
         previousBtn.onClick.AddListener(PreviousPage);
         nextBtn.onClick.AddListener(NextPage);
@@ -79,6 +66,29 @@ public class ShopDisplay : MonoBehaviour
         UpdateBuyButtonInteractivity();
     }
 
+    public void DisplayFilterPanel()
+    {
+        FilterPanel.SetActive(true);
+        helmetFilter.onClick.AddListener(() => OnFilterButtonPressed("Helmet", helmetFilter));
+        ShoulderFilter.onClick.AddListener(() => OnFilterButtonPressed("Shoulder", ShoulderFilter));
+        ElbowFilter.onClick.AddListener(() => OnFilterButtonPressed("Elbow", ElbowFilter));
+        KneeFilter.onClick.AddListener(() => OnFilterButtonPressed("Knee", KneeFilter));
+        HipFilter.onClick.AddListener(() => OnFilterButtonPressed("Hip", HipFilter));
+        MantleFilter.onClick.AddListener(() => OnFilterButtonPressed("Mantle", MantleFilter));
+
+        HideProducts.onClick.AddListener(() => OnHideProducts());
+
+        DisplayFilterBtn.onClick.RemoveAllListeners();
+        DisplayFilterBtn.onClick.AddListener(() => HideFilterPanel());
+    }
+
+    public void HideFilterPanel()
+    {
+        FilterPanel.SetActive(false);
+        DisplayFilterBtn.onClick.RemoveAllListeners();
+        DisplayFilterBtn.onClick.AddListener(() => DisplayFilterPanel());
+    }
+
     void DisplayProducts()
     {
         foreach (Transform child in productContainer)
@@ -94,12 +104,13 @@ public class ShopDisplay : MonoBehaviour
             var product = shopInventory.products[i];
             GameObject productUI = Instantiate(productUIPrefab, productContainer);
 
-            productUI.transform.Find("Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>().text = product.productName;
-            productUI.transform.Find("Content/Price/HUD_Stat_Value/Label_Stat_Text").GetComponent<TMP_Text>().text = product.price.ToString();
-            productUI.transform.Find("Content/Item/Icon/ICON").GetComponent<Image>().sprite = product.productImage;
-            productUI.transform.Find("Content/Item/Name/Label_Description").GetComponent<TMP_Text>().text = product.description;
+            productUI.transform.Find("InfoPanel/Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>().text = product.productName;
+            productUI.transform.Find("InfoPanel/Content/Price/HUD_Stat_Value/Label_Stat_Text").GetComponent<TMP_Text>().text = product.price.ToString();
+            productUI.transform.Find("ProductButton/ICON").GetComponent<Image>().sprite = product.productImage;
+            productUI.transform.Find("InfoPanel/Content/Item/Icon/ICON").GetComponent<Image>().sprite = product.productImage;
+            productUI.transform.Find("InfoPanel/Content/Item/Name/Label_Description").GetComponent<TMP_Text>().text = product.description;
 
-            Button buyButton = productUI.transform.Find("BuyButton").GetComponent<Button>();
+            Button buyButton = productUI.transform.Find("InfoPanel/BuyButton").GetComponent<Button>();
 
             if (IsProductOwned(product))
             {
@@ -110,8 +121,6 @@ public class ShopDisplay : MonoBehaviour
             {
                 buyButton.onClick.AddListener(() => buyComponent.BuyProduct(product));
             }
-
-            AddButtonTooltips(buyButton, product);
         }
     }
 
@@ -122,11 +131,11 @@ public class ShopDisplay : MonoBehaviour
 
         foreach (Transform productUI in productContainer)
         {
-            Product product = originalProducts.FirstOrDefault(p => p.productName == productUI.transform.Find("Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>().text);
+            Product product = originalProducts.FirstOrDefault(p => p.productName == productUI.transform.Find("InfoPanel/Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>().text);
 
             if (product != null)
             {
-                Button buyButton = productUI.transform.Find("BuyButton").GetComponent<Button>();
+                Button buyButton = productUI.transform.Find("InfoPanel/BuyButton").GetComponent<Button>();
                 TMP_Text buyButtonText = buyButton.transform.Find("Content/BuyText").GetComponent<TMP_Text>();
 
                 if (IsProductOwned(product))
@@ -215,32 +224,6 @@ public class ShopDisplay : MonoBehaviour
         }
     }
 
-    public void OnPointerEnter(Button targetButton, Product product)
-    {
-        if (targetButton != null && !targetButton.interactable)
-        {
-            if (LevelAndCash.Instance.Level < product.requiredLevel)
-            {
-                prompt.text = "Not high enough level to buy this item. Required level: " + product.requiredLevel;
-            }
-            else if (LevelAndCash.Instance.Cash < product.price)
-            {
-                prompt.text = "Not enough cash to buy this item.";
-            }
-            else
-            {
-                prompt.text = "You already own this item";
-            }
-            prompt.gameObject.SetActive(true);
-        }
-    }
-
-    public void OnPointerExit()
-    {
-        if (prompt != null)
-            prompt.gameObject.SetActive(false);
-    }
-
     public void OnFilterButtonPressed(string category, Button filterButton)
     {
         FilterProducts(category);
@@ -266,24 +249,6 @@ public class ShopDisplay : MonoBehaviour
             });
         }
     }
-
-    private void AddButtonTooltips(Button buyButton, Product product)
-    {
-        EventTrigger trigger = buyButton.gameObject.AddComponent<EventTrigger>();
-
-        // Entry for pointer enter
-        EventTrigger.Entry enterEntry = new EventTrigger.Entry();
-        enterEntry.eventID = EventTriggerType.PointerEnter;
-        enterEntry.callback.AddListener((eventData) => OnPointerEnter(buyButton, product));
-        trigger.triggers.Add(enterEntry);
-
-        // Entry for pointer exit
-        EventTrigger.Entry exitEntry = new EventTrigger.Entry();
-        exitEntry.eventID = EventTriggerType.PointerExit;
-        exitEntry.callback.AddListener((eventData) => OnPointerExit());
-        trigger.triggers.Add(exitEntry);
-    }
-
 
     public void FilterProducts(string category)
     {
