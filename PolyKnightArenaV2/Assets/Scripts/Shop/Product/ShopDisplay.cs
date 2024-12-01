@@ -12,6 +12,9 @@ public class ShopDisplay : MonoBehaviour
     public GameObject FilterPanel;
     public Transform productContainer;
 
+    public GameObject productInfoUIPrefab;
+    public Transform InfoContainer;
+
     [SerializeField] private Button nextBtn;
     [SerializeField] private Button previousBtn;
     [SerializeField] private Button helmetFilter;
@@ -102,15 +105,25 @@ public class ShopDisplay : MonoBehaviour
         for (int i = startProductIndex; i < endProductIndex; i++)
         {
             var product = shopInventory.products[i];
-            GameObject productUI = Instantiate(productUIPrefab, productContainer);
+            GameObject productButtonUI = Instantiate(productUIPrefab, productContainer);
+            GameObject productUI = Instantiate(productInfoUIPrefab, InfoContainer);
+            ProductMono productMono = productButtonUI.GetComponent<ProductMono>();
+            if (productMono != null)
+            {
+                productMono.infoPanel = productUI; // Assign the infoPanel of the instantiated prefab
+            }
+            else
+            {
+                Debug.LogError("ProductMono script is missing on the productUIPrefab.");
+            }
 
-            productUI.transform.Find("InfoPanel/Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>().text = product.productName;
-            productUI.transform.Find("InfoPanel/Content/Price/HUD_Stat_Value/Label_Stat_Text").GetComponent<TMP_Text>().text = product.price.ToString();
-            productUI.transform.Find("ProductButton/ICON").GetComponent<Image>().sprite = product.productImage;
-            productUI.transform.Find("InfoPanel/Content/Item/Icon/ICON").GetComponent<Image>().sprite = product.productImage;
-            productUI.transform.Find("InfoPanel/Content/Item/Name/Label_Description").GetComponent<TMP_Text>().text = product.description;
+            productUI.transform.Find("Content/Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>().text = product.productName;
+            productUI.transform.Find("Content/Content/Price/HUD_Stat_Value/Label_Stat_Text").GetComponent<TMP_Text>().text = product.price.ToString();
+            productButtonUI.transform.Find("ProductButton/ICON").GetComponent<Image>().sprite = product.productImage;
+            productUI.transform.Find("Content/Content/Item/Icon/ICON").GetComponent<Image>().sprite = product.productImage;
+            productUI.transform.Find("Content/Content/Item/Name/Label_Description").GetComponent<TMP_Text>().text = product.description;
 
-            Button buyButton = productUI.transform.Find("InfoPanel/BuyButton").GetComponent<Button>();
+            Button buyButton = productUI.transform.Find("Content/BuyButton").GetComponent<Button>();
 
             if (IsProductOwned(product))
             {
@@ -129,13 +142,13 @@ public class ShopDisplay : MonoBehaviour
         int playerLevel = LevelAndCash.Instance.Level;
         int playerCash = LevelAndCash.Instance.Cash;
 
-        foreach (Transform productUI in productContainer)
+        foreach (Transform productUI in InfoContainer)
         {
-            Product product = originalProducts.FirstOrDefault(p => p.productName == productUI.transform.Find("InfoPanel/Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>().text);
+            Product product = originalProducts.FirstOrDefault(p => p.productName == productUI.transform.Find("Content/Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>().text);
 
             if (product != null)
             {
-                Button buyButton = productUI.transform.Find("InfoPanel/BuyButton").GetComponent<Button>();
+                Button buyButton = productUI.transform.Find("Content/BuyButton").GetComponent<Button>();
                 TMP_Text buyButtonText = buyButton.transform.Find("Content/BuyText").GetComponent<TMP_Text>();
 
                 if (IsProductOwned(product))
@@ -210,14 +223,14 @@ public class ShopDisplay : MonoBehaviour
     {
         foreach (Transform productUI in productContainer)
         {
-            TMP_Text productNameText = productUI.transform.Find("ProductName").GetComponent<TMP_Text>();
+            TMP_Text productNameText = productUI.transform.Find("InfoPanel/Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>();
             if (productNameText.text == product.productName)
             {
-                Button buyButton = productUI.transform.Find("BuyButton").GetComponent<Button>();
+                Button buyButton = productUI.transform.Find("InfoPanel/BuyButton").GetComponent<Button>();
                 if (IsProductOwned(product))
                 {
                     buyButton.interactable = false;
-                    buyButton.transform.Find("BuyButtonText").GetComponent<TMP_Text>().text = "Owned";
+                    buyButton.transform.Find("BuyText").GetComponent<TMP_Text>().text = "Owned";
                 }
                 break;
             }
@@ -227,27 +240,21 @@ public class ShopDisplay : MonoBehaviour
     public void OnFilterButtonPressed(string category, Button filterButton)
     {
         FilterProducts(category);
-
-        Transform allDisplayButtonTransform = filterButton.transform.Find("All_Display_btn");
-        if (allDisplayButtonTransform != null)
         {
-            if (activeAllDisplayButton != null && activeAllDisplayButton != allDisplayButtonTransform.gameObject)
-            {
-                activeAllDisplayButton.SetActive(false);
-            }
-
-            activeAllDisplayButton = allDisplayButtonTransform.gameObject;
-            activeAllDisplayButton.SetActive(true);
-
-            Button allDisplayButtonComponent = activeAllDisplayButton.GetComponent<Button>();
-            allDisplayButtonComponent.onClick.RemoveAllListeners();
-            allDisplayButtonComponent.onClick.AddListener(() =>
-            {
-                activeAllDisplayButton.SetActive(false);
-                activeAllDisplayButton = null;
-                ShowAllProducts();
-            });
+            Transform buttontext = filterButton.transform.Find("Content");
+            buttontext.transform.Find("Label_Button").GetComponent<TMP_Text>().text = "Show All";
+            filterButton.onClick.RemoveAllListeners();
+            filterButton.onClick.AddListener(() => ShowProducts(filterButton));
         }
+    }
+
+    public void ShowProducts(Button filterbutton)
+    {
+        Transform buttontext = filterbutton.transform.Find("Content");
+        buttontext.transform.Find("Label_Button").GetComponent<TMP_Text>().text = filterbutton.name;
+        filterbutton.onClick.RemoveAllListeners();
+        filterbutton.onClick.AddListener(() => OnFilterButtonPressed(filterbutton.name, filterbutton));
+        ShowAllProducts();
     }
 
     public void FilterProducts(string category)
