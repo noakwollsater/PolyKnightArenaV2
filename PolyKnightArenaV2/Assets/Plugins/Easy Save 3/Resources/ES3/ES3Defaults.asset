@@ -32,6 +32,9 @@ MonoBehaviour:
     assemblyNames:
     - Assembly-CSharp
     - Assembly-CSharp-firstpass
+    - Opsive.Shared.Runtime
+    - Opsive.UltimateCharacterController
+    - Opsive.UltimateCharacterController.Demo
     - UnityUIExtensions
     showAdvancedSettings: 0
   addMgrToSceneAutomatically: 0
