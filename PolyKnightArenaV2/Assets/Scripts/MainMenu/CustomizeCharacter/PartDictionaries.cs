@@ -37,37 +37,37 @@ public class PartDictionaries : MonoBehaviour
 
     public Dictionary<string, int> defaultIndices;
 
-    public void InitializeDefaults()
-    {
-        // Define the default indices for each customizable part
-        defaultIndices = new Dictionary<string, int>
-    {
-        {"HeadwearIndex", 0},
-        {"HatIndex", 0},
-        {"MaskIndex", 0},
-        {"HeadAttach", 0},
-        {"HairIndex", 0},
-        {"FaceIndex", 0},
-        {"EyebrowIndex", 0},
-        {"FacialHairIndex", 0},
-        {"TorsoIndex", 0},
-        {"MantleIndex", 0},
-        {"RightShoulderIndex", 0},
-        {"LeftShoulderIndex", 0},
-        {"RightUpperArmIndex", 0},
-        {"LeftUpperArmIndex", 0},
-        {"LeftEblowIndex", 0},
-        {"RightEblowIndex", 0},
-        {"RightLowerArmIndex", 0},
-        {"LeftLowerArmIndex", 0},
-        {"RightHandIndex", 0},
-        {"LeftHandIndex", 0},
-        {"HipIndex", 0},
-        {"HipAttachIndex", 0},
-        {"RightKneeIndex", 0},
-        {"LeftKneeIndex", 0},
-        {"RightLegIndex", 0},
-        {"LeftLegIndex", 0}
-    };
-    }
+    //public void InitializeDefaults()
+    //{
+    //    // Define the default indices for each customizable part
+    //    defaultIndices = new Dictionary<string, int>
+    //{
+    //    {"HeadwearIndex", 0},
+    //    {"HatIndex", 0},
+    //    {"MaskIndex", 0},
+    //    {"HeadAttach", 0},
+    //    {"HairIndex", 0},
+    //    {"FaceIndex", 0},
+    //    {"EyebrowIndex", 0},
+    //    {"FacialHairIndex", 0},
+    //    {"TorsoIndex", 0},
+    //    {"MantleIndex", 0},
+    //    {"RightShoulderIndex", 0},
+    //    {"LeftShoulderIndex", 0},
+    //    {"RightUpperArmIndex", 0},
+    //    {"LeftUpperArmIndex", 0},
+    //    {"LeftEblowIndex", 0},
+    //    {"RightEblowIndex", 0},
+    //    {"RightLowerArmIndex", 0},
+    //    {"LeftLowerArmIndex", 0},
+    //    {"RightHandIndex", 0},
+    //    {"LeftHandIndex", 0},
+    //    {"HipIndex", 0},
+    //    {"HipAttachIndex", 0},
+    //    {"RightKneeIndex", 0},
+    //    {"LeftKneeIndex", 0},
+    //    {"RightLegIndex", 0},
+    //    {"LeftLegIndex", 0}
+    //};
+    //}
 }

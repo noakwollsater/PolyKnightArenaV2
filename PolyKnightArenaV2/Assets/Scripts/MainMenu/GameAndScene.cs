@@ -11,6 +11,9 @@ public class GameAndScene : MonoBehaviour
 
     void Start()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         Shopbtn.onClick.AddListener(LoadScene);
         Quitbtn.onClick.AddListener(QuitGame);
     }

@@ -5,7 +5,6 @@ public class GameStartScript : MonoBehaviour
 {
     [SerializeField] private GameObject player;
     [SerializeField] private PartDictionaries partDictionaries;
-    [SerializeField] private PartSelection partSelection;
 
     private int currentHeadwearIndex = 0;
     private int currentHatsIndex = 0;
@@ -150,7 +149,6 @@ public class GameStartScript : MonoBehaviour
                 }
             }
         }
-
     }
 
     void FindModels()
@@ -434,14 +432,14 @@ public class GameStartScript : MonoBehaviour
     {
         string genderKey = gender == "Male" ? "HumanMale" : "HumanFemale";
 
-        if (partSelection.isFacialHair)
+        if (isFacialHair)
         {
             ChangeModel(value, genderKey, partDictionaries.facialHairModels, ref currentFacialHairIndex);
 
             ActivateModel(genderKey, partDictionaries.facialHairModels);
             DisableModel("Facewear", partDictionaries.maskParts);
         }
-        else if (partSelection.isMask)
+        else if (isMask)
         {
             ChangeModel(value, "Facewear", partDictionaries.maskParts, ref currentmaskIndex);
 

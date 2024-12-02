@@ -35,7 +35,6 @@ public class ShopDisplay : MonoBehaviour
     private int productsPerPage = 28;  // Number of products per page
 
     private List<Product> originalProducts;
-    private GameObject activeAllDisplayButton = null;
 
     void Start()
     {
@@ -223,7 +222,7 @@ public class ShopDisplay : MonoBehaviour
     {
         foreach (Transform productUI in productContainer)
         {
-            TMP_Text productNameText = productUI.transform.Find("InfoPanel/Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>();
+            TMP_Text productNameText = productUI.transform.Find("Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>();
             if (productNameText.text == product.productName)
             {
                 Button buyButton = productUI.transform.Find("InfoPanel/BuyButton").GetComponent<Button>();
