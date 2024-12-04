@@ -51,6 +51,7 @@ public class GameStartScript : MonoBehaviour
             Debug.Log("ES3Settings initialized. Save path: " + Application.persistentDataPath + "/BoughtData.es3");
             ES3.Save("Bought Items", "Initialize", settings);
         }
+        selectMale();
         FindModels();
         GetPurchasedItems();
         LoadPlayerPrefs();
@@ -134,6 +135,36 @@ public class GameStartScript : MonoBehaviour
                         InitializeModelParts(modularCharacter, "All_Gender_Parts/All_10_Knee_Attachment_Right/" + parts[0], "RightKneewear", partDictionaries.kneeParts);
                         InitializeModelParts(modularCharacter, "All_Gender_Parts/All_11_Knee_Attachment_Left/" + parts[1], "LeftKneewear", partDictionaries.kneeParts);
                     }
+                }
+            }
+        }
+    }
+
+    void selectMale()
+    {
+        gender = "Male";
+        SetGenderPartsActive(partDictionaries.femaleParts, false);
+        SetGenderPartsActive(partDictionaries.maleParts, true);
+    }
+
+    // Select female parts
+    void selectFemale()
+    {
+        gender = "Female";
+        SetGenderPartsActive(partDictionaries.maleParts, false);
+        SetGenderPartsActive(partDictionaries.femaleParts, true);
+    }
+
+    // Helper function to activate/deactivate gender-specific parts
+    void SetGenderPartsActive(GameObject[] parts, bool isActive)
+    {
+        if (parts != null)
+        {
+            foreach (var part in parts)
+            {
+                if (part != null)
+                {
+                    part.SetActive(isActive);
                 }
             }
         }
@@ -333,7 +364,6 @@ public class GameStartScript : MonoBehaviour
             Debug.LogWarning($"No parent object found for key '{modelKey}'.");
         }
     }
-
 
     void ChangeFace(int value)
     {
@@ -547,7 +577,11 @@ public class GameStartScript : MonoBehaviour
     private void LoadPlayerPrefs()
     {
         // Load gender
-        gender = PlayerPrefs.GetString("PlayerGender", ""); // Default to Male if no saved data
+        gender = PlayerPrefs.GetString("PlayerGender", "Male"); // Default to Male if no saved data
+        if (gender == "Male")
+            selectMale();
+        else
+            selectFemale();
 
         isHair = PlayerPrefs.GetInt("IsHair", 0) == 1;
         isHelmet = PlayerPrefs.GetInt("IsHelmet", 0) == 1;

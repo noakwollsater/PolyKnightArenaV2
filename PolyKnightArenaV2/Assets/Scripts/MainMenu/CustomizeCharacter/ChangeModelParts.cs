@@ -39,7 +39,6 @@ public class ChangeModelParts : MonoBehaviour
     [SerializeField] private Button leg_L;
     [SerializeField] private Button leg_R;
 
-    public GenderSelection genderSelection;
     public PartDictionaries partDictionaries;
     public PartSelection partSelection;
 
@@ -67,16 +66,12 @@ public class ChangeModelParts : MonoBehaviour
 
     private void Start()
     {
-        genderSelection = GetComponent<GenderSelection>();
+        gender = PlayerPrefs.GetString("PlayerGender", "Male");
         partDictionaries = GetComponent<PartDictionaries>();
         partSelection = GetComponent<PartSelection>();
 
         FindModels();
         AddListeners();
-    }
-    private void Update()
-    {
-       SelectedGender();
     }
 
     void AddListeners()
@@ -105,33 +100,7 @@ public class ChangeModelParts : MonoBehaviour
         Savebtn.onClick.AddListener(() => SaveCharacter());
     }
 
-    void SelectedGender()
-    {
-        if(GenderSelection.instance.isFemale == true)
-        {
-            gender = "Female";   
-            foreach (var part in partDictionaries.maleParts)
-            {
-                part.SetActive(false);
-            }
-            foreach (var part in partDictionaries.femaleParts)
-            {
-                part.SetActive(true);
-            }
-        }
-        else
-        {
-            gender = "Male";
-            foreach (var part in partDictionaries.maleParts)
-            {
-                part.SetActive(true);
-            }
-            foreach (var part in partDictionaries.femaleParts)
-            {
-                part.SetActive(false);
-            }
-        }
-    }
+
     void FindModels()
     {
         Transform modularCharacter = player.transform.Find("Modular_Characters");
@@ -475,9 +444,6 @@ public class ChangeModelParts : MonoBehaviour
 
     void SaveCharacter()
     {
-        // Save gender
-        PlayerPrefs.SetString("PlayerGender", gender);
-
         PlayerPrefs.SetInt("IsHair", partSelection.isHair ? 1 : 0);
         PlayerPrefs.SetInt("IsHelmet", partSelection.isHelmet ? 1 : 0);
         PlayerPrefs.SetInt("IsHat", partSelection.isHat ? 1 : 0);

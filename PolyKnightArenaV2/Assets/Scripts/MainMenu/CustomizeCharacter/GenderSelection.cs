@@ -15,25 +15,31 @@ public class GenderSelection : MonoBehaviour
     [SerializeField] private Sprite[] head;    // Array of head
     [SerializeField] private Sprite[] torso;   // Array of torso
 
-    public static GenderSelection instance { get; private set; }
-
     private Transform maleParts;   // Reference to male body parts
     private Transform femaleParts; // Reference to female body parts
 
-    public bool isFemale = false;
+    private string gender;
+
+    public bool isFemale;
 
     void Start()
     {
-        if (instance == null)
+        gender = PlayerPrefs.GetString("PlayerGender", "Male"); // Default to Male if no saved data
+        if (gender == "Male")
         {
-            instance = this;
+            isFemale = false;
+            UpdateGenderVisuals();
         }
+        else
+        {
+            isFemale = true;
+            UpdateGenderVisuals();
+        }
+
 
         FindParts();
 
         genderBtn.onClick.AddListener(ChangeGender);
-
-        UpdateGenderVisuals();
     }
 
     private void FindParts()
@@ -55,6 +61,15 @@ public class GenderSelection : MonoBehaviour
     {
         isFemale = !isFemale; // Toggle gender
 
+        if (isFemale)
+        {
+            gender = "Female";
+        }
+        else
+        {
+            gender = "Male";
+        }
+
         UpdateGenderVisuals();
 
         // Notify TransformCamera to update sprites
@@ -69,7 +84,7 @@ public class GenderSelection : MonoBehaviour
         }
     }
 
-    private void UpdateGenderVisuals()
+    public void UpdateGenderVisuals()
     {
         // Update the button image to reflect the selected gender
         genderImage.sprite = isFemale ? genders[0] : genders[1];
@@ -96,6 +111,11 @@ public class GenderSelection : MonoBehaviour
         // Enable/disable body parts based on the selected gender
         if (femaleParts != null) femaleParts.gameObject.SetActive(isFemale);
         if (maleParts != null) maleParts.gameObject.SetActive(!isFemale);
+    }
+
+    public void SaveGender()
+    {
+        PlayerPrefs.SetString("PlayerGender", gender);
     }
 
 }
