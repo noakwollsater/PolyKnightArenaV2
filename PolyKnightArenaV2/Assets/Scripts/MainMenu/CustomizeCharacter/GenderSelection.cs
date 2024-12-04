@@ -64,10 +64,12 @@ public class GenderSelection : MonoBehaviour
         if (isFemale)
         {
             gender = "Female";
+            SaveGender();
         }
         else
         {
             gender = "Male";
+            SaveGender();
         }
 
         UpdateGenderVisuals();

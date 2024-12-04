@@ -66,12 +66,16 @@ public class ChangeModelParts : MonoBehaviour
 
     private void Start()
     {
-        gender = PlayerPrefs.GetString("PlayerGender", "Male");
         partDictionaries = GetComponent<PartDictionaries>();
         partSelection = GetComponent<PartSelection>();
 
         FindModels();
         AddListeners();
+    }
+
+    private void Update()
+    {
+        gender = PlayerPrefs.GetString("PlayerGender", "Male");
     }
 
     void AddListeners()
