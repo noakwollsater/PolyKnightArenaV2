@@ -15,6 +15,8 @@ public class PlayerNameInput : MonoBehaviour
 
     private void Start()
     {
+        // If no name is set, show the name input UI
+        SetUpInputField();
         if (!string.IsNullOrEmpty(DisplayName))
         {
             nameInputField.text = DisplayName;
@@ -26,8 +28,8 @@ public class PlayerNameInput : MonoBehaviour
         }
         else
         {
-            // If no name is set, show the name input UI
-            SetUpInputField();
+            // Optionally set placeholder text
+            nameInputField.text = "Player";
         }
     }
 
@@ -35,9 +37,6 @@ public class PlayerNameInput : MonoBehaviour
     {
         // Add listener to enable the button when input is not empty
         nameInputField.onValueChanged.AddListener(SavePlayerName);
-
-        // Optionally set placeholder text
-        nameInputField.text = "Player";
     }
 
     public void SavePlayerName(string name)

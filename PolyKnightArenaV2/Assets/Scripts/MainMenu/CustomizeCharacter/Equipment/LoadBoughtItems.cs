@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -49,28 +50,45 @@ public class LoadBoughtItems : MonoBehaviour
 
     public void OnAttachButtonPressed(string category, Button filterButton)
     {
-        ItemPanel.SetActive(true);
-        AttachItems(category);
+        if (ItemPanel.activeSelf)
         {
+            // Close the panel if it's already open.
+            ClosePanel();
+        }
+        else
+        {
+            // Open the panel and apply the filter.
+            ItemPanel.SetActive(true);
+            AttachItems(category);
+
+            // Remove listeners to avoid duplication and set up for reopening.
             filterButton.onClick.RemoveAllListeners();
-            filterButton.onClick.AddListener(() => ClosePanel(filterButton));
+            filterButton.onClick.AddListener(() => OnAttachButtonPressed(category, filterButton));
         }
     }
 
+
+
     public void AttachItems(string category)
     {
-        // Use the filtered list for display.
-        filteredProducts = originalProducts.Where(product => product.productType == category).ToList();
-        DisplayProducts(filteredProducts); // Pass filtered products to display.
+        // Filter products based on the selected category.
+        filteredProducts = originalProducts.Where(product => product.productType.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        if (filteredProducts.Count == 0)
+        {
+            Debug.LogWarning($"No products found for category: {category}");
+        }
+
+        DisplayProducts(filteredProducts); // Display only the filtered products.
     }
 
-    private void ClosePanel(Button button)
+
+    private void ClosePanel()
     {
         ItemPanel.SetActive(false);
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(() => OnAttachButtonPressed(button.name, button));
-        ShowAllItems();
+        ShowAllItems(); // Reset the display to show all items after closing.
     }
+
 
     private void InitializeES3Settings()
     {
@@ -90,9 +108,10 @@ public class LoadBoughtItems : MonoBehaviour
 
     void DisplayProducts(List<Product> productsToShow = null)
     {
-        // Default to filtered products if no parameter is provided.
+        // Use default (filtered) products if no list is provided.
         var products = productsToShow ?? filteredProducts;
 
+        // Clear the current items in the attachment container.
         foreach (Transform child in attachmentContainer)
         {
             Destroy(child.gameObject);
@@ -100,27 +119,34 @@ public class LoadBoughtItems : MonoBehaviour
 
         var allKeys = ES3.GetKeys(settings);
         int index = 1;
+
         foreach (var item in products)
         {
-            Debug.Log("Product: " + item.productName);
+            bool itemFound = false;
+
             foreach (var key in allKeys)
             {
-                Debug.Log("Item: " + key);
                 int value = index;
                 if (key.Contains("Own_" + item.productName))
                 {
+                    itemFound = true;
+
+                    // Create a new button for the item.
                     GameObject ItemButtonUI = Instantiate(attachItem, attachmentContainer);
                     ItemButtonUI.transform.Find("ProductButton/ICON").GetComponent<Image>().sprite = item.productImage;
                     ItemButtonUI.transform.Find("ProductButton").GetComponent<Button>().onClick.AddListener(() => EquipSelectedItem(value, item.productType));
                 }
-                else
-                {
-                    Debug.Log("No items found.");
-                }
             }
+
+            if (!itemFound)
+            {
+                Debug.Log($"No saved data found for product: {item.productName}");
+            }
+
             index++;
         }
     }
+
 
     private void EquipSelectedItem(int value, string category)
     {
