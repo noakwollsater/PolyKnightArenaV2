@@ -26,15 +26,12 @@ public class GameStartScript : MonoBehaviour
     private int currentLeftLegIndex = 0;
     private int currentRightLegIndex = 0;
 
-    private int currentHeadAttachIndex = 0;
-    private int currentMantleIndex = 0;
-    private int currentRightShoulderIndex = 0;
-    private int currentLeftShoulderIndex = 0;
-    private int currentRightElbowIndex = 0;
-    private int currentLeftElbowIndex = 0;
-    private int currentHipAttachIndex = 0;
-    private int currentRightKneeIndex = 0;
-    private int currentLeftKneeIndex = 0;
+    private string headAttachKey = "00";
+    private string mantleKey = "00";
+    private string shoulderKey = "00";
+    private string elbowKey = "00";
+    private string hipAttachKey = "00";
+    private string kneeKey = "00";
 
     private bool isHair;
     private bool isHelmet;
@@ -73,18 +70,15 @@ public class GameStartScript : MonoBehaviour
         {
             // Retrieve all keys
             var allKeys = ES3.GetKeys(settings);
-            Debug.Log("All keys: " + allKeys.Length);
 
             // Loop through the keys and find matches
             foreach (var key in allKeys)
             {
-                Debug.Log("Key: " + key);
                 if (key.Contains(partialKey))
                 {
                     string modelData = ES3.Load<string>(key, settings);
 
                     string[] parts = modelData.Split(' ');
-                    Debug.Log("Parts owned: " + parts[0]);
 
                     if (parts[0].Contains("Helmet"))
                     {
@@ -92,7 +86,6 @@ public class GameStartScript : MonoBehaviour
                         {
                             InitializeModelParts(modularCharacter, "All_Gender_Parts/All_02_Head_Attachment/Helmet/" + "Chr_HelmetAttachment_00", "HeadAttach", partDictionaries.headAttachParts);
                         }
-                        Debug.Log(parts.Length);
                         InitializeModelParts(modularCharacter, "All_Gender_Parts/All_02_Head_Attachment/Helmet/" + parts[0], "HeadAttach", partDictionaries.headAttachParts);
                     }
                     if (parts[0].Contains("Back"))
@@ -109,7 +102,6 @@ public class GameStartScript : MonoBehaviour
                         {
                             InitializeModelParts(modularCharacter, "All_Gender_Parts/All_05_Shoulder_Attachment_Right/" + "Chr_ShoulderAttachRight_00", "RightShoulderwear", partDictionaries.shoulderParts);
                             InitializeModelParts(modularCharacter, "All_Gender_Parts/All_06_Shoulder_Attachment_Left/" + "Chr_ShoulderAttachLeft_00", "LeftShoulderwear", partDictionaries.shoulderParts);
-                            Debug.Log("Initialized empty shoulder parts");
                         }
                         InitializeModelParts(modularCharacter, "All_Gender_Parts/All_05_Shoulder_Attachment_Right/" + parts[0], "RightShoulderwear", partDictionaries.shoulderParts);
                         InitializeModelParts(modularCharacter, "All_Gender_Parts/All_06_Shoulder_Attachment_Left/" + parts[1], "LeftShoulderwear", partDictionaries.shoulderParts);
@@ -129,7 +121,6 @@ public class GameStartScript : MonoBehaviour
                         if (partDictionaries.hipAttachParts != null || partDictionaries.hipAttachParts?.Count == 0)
                         {
                             InitializeModelParts(modularCharacter, "All_Gender_Parts/All_09_Hips_Attachment/" + "Chr_HipAttachment_00", "HipAttachment", partDictionaries.hipAttachParts);
-                            Debug.Log("Initialized empty hip parts");
                         }
                         InitializeModelParts(modularCharacter, "All_Gender_Parts/All_09_Hips_Attachment/" + parts[0], "HipAttachment", partDictionaries.hipAttachParts);
                     }
@@ -143,9 +134,6 @@ public class GameStartScript : MonoBehaviour
                         InitializeModelParts(modularCharacter, "All_Gender_Parts/All_10_Knee_Attachment_Right/" + parts[0], "RightKneewear", partDictionaries.kneeParts);
                         InitializeModelParts(modularCharacter, "All_Gender_Parts/All_11_Knee_Attachment_Left/" + parts[1], "LeftKneewear", partDictionaries.kneeParts);
                     }
-
-
-                    Debug.Log("Shoulder data: " + partDictionaries.shoulderParts.Count);
                 }
             }
         }
@@ -254,9 +242,6 @@ public class GameStartScript : MonoBehaviour
             {
                 modelDict[key] = newParts;
             }
-
-            // Log initialized parts
-            Debug.Log($"Initialized {newParts.Length} parts for {key} at {path}");
         }
         else
         {
@@ -290,7 +275,6 @@ public class GameStartScript : MonoBehaviour
 
         // Activate the new model
         models[currentIndex].SetActive(true);
-        Debug.Log($"Changed model to index {currentIndex} for key '{modelKey}'");
     }
     void DisableModel(string modelKey, Dictionary<string, GameObject[]> modelDict)
     {
@@ -492,40 +476,78 @@ public class GameStartScript : MonoBehaviour
         ChangeModel(value, KeyLeft, partDictionaries.legParts, ref currentLeftLegIndex);
     }
 
-    void ChangeHeadAttach(int value)
+
+    void ChangeModel(string modelName, string modelKey, Dictionary<string, GameObject[]> modelDict)
     {
-        ChangeModel(value, "HeadAttach", partDictionaries.headAttachParts, ref currentHeadAttachIndex);
-        Debug.Log("Head Attach index: " + currentHeadAttachIndex);
+        if (!modelDict.ContainsKey(modelKey))
+        {
+            Debug.LogWarning($"Model key '{modelKey}' not found in the dictionary.");
+            return;
+        }
+
+        GameObject[] models = modelDict[modelKey];
+        if (models == null || models.Length == 0)
+        {
+            Debug.LogWarning($"No models found for key '{modelKey}'.");
+            return;
+        }
+
+        // Deactivate all models
+        foreach (var model in models)
+        {
+            model.SetActive(false);
+        }
+
+        // Find and activate the model by name
+        GameObject targetModel = System.Array.Find(models, model => model.name.Contains(modelName, System.StringComparison.OrdinalIgnoreCase));
+        if (targetModel != null)
+        {
+            targetModel.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning($"Model '{modelName}' not found in the models for key '{modelKey}'.");
+        }
     }
 
-    void ChangeShoulder(int value)
+
+    public void ChangeHeadAttach(string modelName)
     {
-        ChangeModel(value, "RightShoulderwear", partDictionaries.shoulderParts, ref currentRightShoulderIndex);
-        ChangeModel(value, "LeftShoulderwear", partDictionaries.shoulderParts, ref currentLeftShoulderIndex);
+        ChangeModel(modelName, "HeadAttach", partDictionaries.headAttachParts);
     }
-    void ChangeElbow(int value)
+
+    public void ChangeShoulder(string modelName)
     {
-        ChangeModel(value, "RightElbowwear", partDictionaries.elbowParts, ref currentRightElbowIndex);
-        ChangeModel(value, "LeftElbowwear", partDictionaries.elbowParts, ref currentLeftElbowIndex);
+        ChangeModel(modelName, "RightShoulderwear", partDictionaries.shoulderParts);
+        ChangeModel(modelName, "LeftShoulderwear", partDictionaries.shoulderParts);
     }
-    void ChangeHipAttach(int value)
+
+    public void ChangeElbow(string modelName)
     {
-        ChangeModel(value, "HipAttachment", partDictionaries.hipAttachParts, ref currentHipAttachIndex);
+        ChangeModel(modelName, "RightElbowwear", partDictionaries.elbowParts);
+        ChangeModel(modelName, "LeftElbowwear", partDictionaries.elbowParts);
     }
-    void ChangeKnee(int value)
+
+    public void ChangeHipAttach(string modelName)
     {
-        ChangeModel(value, "RightKneewear", partDictionaries.kneeParts, ref currentRightKneeIndex);
-        ChangeModel(value, "LeftKneewear", partDictionaries.kneeParts, ref currentLeftKneeIndex);
+        ChangeModel(modelName, "HipAttachment", partDictionaries.hipAttachParts);
     }
-    void ChangeMantle(int value)
+
+    public void ChangeKnee(string modelName)
     {
-        ChangeModel(value, "BackAttachment", partDictionaries.mantleParts, ref currentMantleIndex);
+        ChangeModel(modelName, "RightKneewear", partDictionaries.kneeParts);
+        ChangeModel(modelName, "LeftKneewear", partDictionaries.kneeParts);
+    }
+
+    public void ChangeMantle(string modelName)
+    {
+        ChangeModel(modelName, "BackAttachment", partDictionaries.mantleParts);
     }
 
     private void LoadPlayerPrefs()
     {
         // Load gender
-        gender = PlayerPrefs.GetString("PlayerGender", "Male"); // Default to Male if no saved data
+        gender = PlayerPrefs.GetString("PlayerGender", ""); // Default to Male if no saved data
 
         isHair = PlayerPrefs.GetInt("IsHair", 0) == 1;
         isHelmet = PlayerPrefs.GetInt("IsHelmet", 0) == 1;
@@ -534,7 +556,6 @@ public class GameStartScript : MonoBehaviour
         isMask = PlayerPrefs.GetInt("IsMask", 0) == 1;
 
         // Load headwear, facewear, hair, and other body parts indices
-        currentHeadAttachIndex = PlayerPrefs.GetInt("HeadAttachIndex", 0);
         currentHeadwearIndex = PlayerPrefs.GetInt("HeadwearIndex", 0);
         currentHatsIndex = PlayerPrefs.GetInt("HatIndex", 0);
         currentmaskIndex = PlayerPrefs.GetInt("MaskIndex", 0);
@@ -548,15 +569,9 @@ public class GameStartScript : MonoBehaviour
         ChangeFace(0);
         ChangeEyebrow(0);
         ChangeFacialWear(0);
-        ChangeHeadAttach(0);
 
         // Load torso and arm parts
         currentTorsoIndex = PlayerPrefs.GetInt("TorsoIndex", 0);
-        currentMantleIndex = PlayerPrefs.GetInt("MantleIndex", 0);
-        currentRightShoulderIndex = PlayerPrefs.GetInt("RightShoulderIndex", 0);
-        currentLeftShoulderIndex = PlayerPrefs.GetInt("LeftShoulderIndex", 0);
-        currentLeftElbowIndex = PlayerPrefs.GetInt("LeftElbowIndex", 0);
-        currentRightElbowIndex = PlayerPrefs.GetInt("RightElbowIndex", 0);
         currentRightUpperArmIndex = PlayerPrefs.GetInt("RightUpperArmIndex", 0);
         currentLeftUpperArmIndex = PlayerPrefs.GetInt("LeftUpperArmIndex", 0);
         currentRightLowerArmIndex = PlayerPrefs.GetInt("RightLowerArmIndex", 0);
@@ -565,25 +580,33 @@ public class GameStartScript : MonoBehaviour
         currentLeftHandIndex = PlayerPrefs.GetInt("LeftHandIndex", 0);
 
         ChangeTorso(0);
-        ChangeMantle(0);
-        ChangeShoulder(0);
-        ChangeElbow(0);
         ChangeUpperArm(0);
         ChangeLowerArm(0);
         ChangeHands(0);
 
         // Load hips and leg parts
         currentHipIndex = PlayerPrefs.GetInt("HipIndex", 0);
-        currentHipAttachIndex = PlayerPrefs.GetInt("HipAttachIndex", 0);
         currentRightLegIndex = PlayerPrefs.GetInt("RightLegIndex", 0);
         currentLeftLegIndex = PlayerPrefs.GetInt("LeftLegIndex", 0);
-        currentRightKneeIndex = PlayerPrefs.GetInt("RightKneeIndex", 0);
-        currentLeftKneeIndex = PlayerPrefs.GetInt("LeftKneeIndex", 0);
 
         ChangeHips(0);
-        ChangeKnee(0);
-        ChangeHips(0);
         ChangeLeg(0);
+
+        // Load attachments
+        headAttachKey = PlayerPrefs.GetString("HeadAttach", "00");
+        Debug.Log($"Loaded HeadAttach: {headAttachKey}");
+        mantleKey = PlayerPrefs.GetString("BackAttachment", "00");
+        shoulderKey = PlayerPrefs.GetString("LeftShoulderwear", "00");
+        elbowKey = PlayerPrefs.GetString("LeftElbowwear", "00");
+        hipAttachKey = PlayerPrefs.GetString("HipAttachment", "00");
+        kneeKey = PlayerPrefs.GetString("LeftKneewear", "00");
+
+        ChangeHeadAttach(headAttachKey);
+        ChangeMantle(mantleKey);
+        ChangeShoulder(shoulderKey);
+        ChangeElbow(elbowKey);
+        ChangeHipAttach(hipAttachKey);
+        ChangeKnee(kneeKey);
 
         Debug.Log("Player preferences loaded.");
     }

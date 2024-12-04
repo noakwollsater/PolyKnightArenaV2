@@ -82,7 +82,7 @@ public class Buy : MonoBehaviour
         }
 
         // Kontrollera att produktens modellnamn inte är tomma
-        if (!string.IsNullOrEmpty(product.RightmodelName) && !string.IsNullOrEmpty(product.LeftmodelName))
+        if (!string.IsNullOrEmpty(product.RightmodelName))
         {
             string modelData = $"{product.RightmodelName} {product.LeftmodelName}";
             ES3.Save<string>("Own_" + product.productName, modelData, boughtSettings);

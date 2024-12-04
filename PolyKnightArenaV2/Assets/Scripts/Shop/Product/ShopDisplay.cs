@@ -220,16 +220,16 @@ public class ShopDisplay : MonoBehaviour
 
     public void RefreshProductUI(Product product)
     {
-        foreach (Transform productUI in productContainer)
+        foreach (Transform productUI in InfoContainer)
         {
-            TMP_Text productNameText = productUI.transform.Find("Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>();
+            TMP_Text productNameText = productUI.transform.Find("Content/Content/Item/Name/Label_ItemName").GetComponent<TMP_Text>();
             if (productNameText.text == product.productName)
             {
-                Button buyButton = productUI.transform.Find("InfoPanel/BuyButton").GetComponent<Button>();
+                Button buyButton = productUI.transform.Find("Content/BuyButton").GetComponent<Button>();
                 if (IsProductOwned(product))
                 {
                     buyButton.interactable = false;
-                    buyButton.transform.Find("BuyText").GetComponent<TMP_Text>().text = "Owned";
+                    buyButton.transform.Find("Content/BuyText").GetComponent<TMP_Text>().text = "Owned";
                 }
                 break;
             }

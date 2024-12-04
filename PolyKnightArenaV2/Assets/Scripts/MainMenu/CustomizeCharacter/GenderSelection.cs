@@ -73,13 +73,11 @@ public class GenderSelection : MonoBehaviour
     {
         // Update the button image to reflect the selected gender
         genderImage.sprite = isFemale ? genders[0] : genders[1];
-        Debug.Log($"Gender image updated to: {genderImage.sprite.name}");
 
         // Update head and torso images
         if (head.Length > 1 && headImage != null)
         {
             headImage.sprite = isFemale ? head[0] : head[1];
-            Debug.Log($"Head image updated to: {headImage.sprite.name}");
         }
         else
         {
@@ -89,7 +87,6 @@ public class GenderSelection : MonoBehaviour
         if (torso.Length > 1 && torsoImage != null)
         {
             torsoImage.sprite = isFemale ? torso[0] : torso[1];
-            Debug.Log($"Torso image updated to: {torsoImage.sprite.name}");
         }
         else
         {
@@ -99,8 +96,6 @@ public class GenderSelection : MonoBehaviour
         // Enable/disable body parts based on the selected gender
         if (femaleParts != null) femaleParts.gameObject.SetActive(isFemale);
         if (maleParts != null) maleParts.gameObject.SetActive(!isFemale);
-
-        Debug.Log($"Gender toggled. Female active: {isFemale}");
     }
 
 }

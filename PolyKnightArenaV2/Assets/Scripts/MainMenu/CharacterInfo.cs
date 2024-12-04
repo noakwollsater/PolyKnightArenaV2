@@ -17,8 +17,8 @@ public class CharacterInfo : MonoBehaviour
 
     private void Start()
     {
-        addXPbtn.onClick.AddListener(() => LevelAndCash.Instance.AddLevelProgress(500));
-        addCashBtn.onClick.AddListener(() => LevelAndCash.Instance.AddCash(500));
+        addXPbtn.onClick.AddListener(() => LevelAndCash.Instance.AddLevelProgress(10000));
+        addCashBtn.onClick.AddListener(() => LevelAndCash.Instance.AddCash(10000));
     }
 
     void Update()
