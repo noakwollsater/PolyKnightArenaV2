@@ -14,6 +14,7 @@ public class TransformCamera : MonoBehaviour
     [SerializeField] private Button torsoBtn;
     [SerializeField] private Button hipBtn;
     [SerializeField] private Button backButton;
+    [SerializeField] private Button ColorBtn;
 
     [SerializeField] private Sprite[] fullBody;
     [SerializeField] private Sprite[] head;
@@ -37,6 +38,7 @@ public class TransformCamera : MonoBehaviour
         torsoBtn.onClick.AddListener(ZoomTorso);
         hipBtn.onClick.AddListener(ZoomHip);
         backButton.onClick.AddListener(ZoomOut);
+        ColorBtn.onClick.AddListener(ZoomOut);
     }
     public void UpdateAllSprites()
     {

@@ -13,7 +13,9 @@ public class MainMenuAnimations : MonoBehaviour
     [SerializeField] private Button PlayButton;
     [SerializeField] private Button SettingsButton;
     [SerializeField] private Button CharacterButton;
+    [SerializeField] private Button backtoCustomize;
     [SerializeField] private Button[] BackButtons;
+    [SerializeField] private Button ColorButton;
 
     [SerializeField] private GameObject Player;
     [SerializeField] private float transitionDuration = 1.5f;
@@ -21,6 +23,20 @@ public class MainMenuAnimations : MonoBehaviour
     void Start()
     {
         CharacterButton.onClick.AddListener(() => StartCoroutine(MoveCamera(
+            new Vector3(75.815f, 6.369f, -56.687f),
+            Quaternion.Euler(0, 245, 0),
+            MainMenuPanel,
+            CharacterMenuPanel,
+            "Animations/CharacterCustomize"
+        )));
+        ColorButton.onClick.AddListener(() => StartCoroutine(MoveCamera(
+            new Vector3(75.815f, 6.369f, -56.687f),
+            Quaternion.Euler(0, 228, 0),
+            MainMenuPanel,
+            CharacterMenuPanel,
+            "Animations/CharacterCustomize"
+       )));
+       backtoCustomize.onClick.AddListener(() => StartCoroutine(MoveCamera(
             new Vector3(75.815f, 6.369f, -56.687f),
             Quaternion.Euler(0, 245, 0),
             MainMenuPanel,
