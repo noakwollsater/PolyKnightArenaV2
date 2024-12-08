@@ -14,6 +14,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Shop.unity
     guid: 4dd28862613011d4eb8839c4eaa11809
+  - enabled: 1
+    path: Assets/Scenes/GameMaps/Scene_Map_01.unity
+    guid: c717e2e94e983a0498337a0cecd80908
+  - enabled: 1
+    path: Assets/Scenes/GameMaps/Scene_Map_02.unity
+    guid: 7ef2d7cf8000edf4aad1022fbe6db866
+  - enabled: 1
+    path: Assets/Scenes/GameMaps/Scene_Map_03.unity
+    guid: 691f8a87ebfb26c4084b20f1fd9f8bf6
+  - enabled: 1
+    path: Assets/Scenes/GameMaps/Scene_Map_04.unity
+    guid: 319f636866c3b594c8cfcfa8f0dd7d80
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
