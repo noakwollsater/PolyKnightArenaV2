@@ -51,8 +51,6 @@ public class MainMenuAnimations : MonoBehaviour
              PlayMenuPanel,
              "Animations/IdleSit"
         )));
-
-        
     }
 
     private IEnumerator MoveCameraCinematic(Vector3 targetPosition, Quaternion targetRotation, GameObject deactivatePanel, GameObject activatePanel, string animationPath)

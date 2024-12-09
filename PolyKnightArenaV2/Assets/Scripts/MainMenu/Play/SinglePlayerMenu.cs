@@ -19,7 +19,7 @@ public class SinglePlayerMenu : MonoBehaviour
 
     [SerializeField] private GameObject player;
 
-    private string selectedScene; // Store the selected scene
+    private string selectedScene = "Scene_Map_01"; // Default to the first map
 
     public string SelectedScene => selectedScene; // Public property to access selected scene
 
@@ -51,11 +51,13 @@ public class SinglePlayerMenu : MonoBehaviour
         SceneManager.LoadScene("LoadingScene");
     }
 
+
     private void Start()
     {
         playButton.onClick.AddListener(StartGame);
         InitializeMapSelection();
     }
+
     private void InitializeMapSelection()
     {
         UpdateButtonStates();
