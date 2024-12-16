@@ -155,7 +155,7 @@ Material:
     - _Color1: {r: 0.2283196, g: 0.5822246, b: 0.7573529, a: 1}
     - _Color_BodyArt: {r: 0.7, g: 0.4, b: 0.2, a: 1}
     - _Color_Eyes: {r: 0, g: 0, b: 0, a: 1}
-    - _Color_Hair: {r: 0.7, g: 0.5, b: 0.3, a: 1}
+    - _Color_Hair: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color_Leather_Primary: {r: 0.6, g: 0.4, b: 0.3, a: 1}
     - _Color_Leather_Secondary: {r: 0.4, g: 0.3, b: 0.2, a: 1}
     - _Color_Metal_Dark: {r: 0.2, g: 0.2, b: 0.2, a: 1}
