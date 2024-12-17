@@ -80,7 +80,6 @@ public class InGameData : MonoBehaviour
         StartCoroutine(MainGameTimer());
     }
 
-
     IEnumerator MainGameTimer()
     {
         float currentTime = mainTimerTime;
@@ -98,7 +97,6 @@ public class InGameData : MonoBehaviour
         Debug.Log("Timer Ended!");
         newRound();
     }
-
     private void newRound()
     {
         RoundObject.SetActive(false);
