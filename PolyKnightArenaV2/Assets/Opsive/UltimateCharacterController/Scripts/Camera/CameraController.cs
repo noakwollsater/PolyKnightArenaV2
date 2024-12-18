@@ -203,7 +203,7 @@ namespace Opsive.UltimateCharacterController.Camera
                     Debug.LogWarning("Warning: No character has been assigned to the Camera Controller. It will automatically be assigned to the GameObject with the Player tag.");
                     m_Character = GameObject.FindGameObjectWithTag("Player");
                     if (m_Character == null) {
-                        Debug.LogError("Error: Unable to find the character with the Player tag. The camera will be disabled.");
+                        Debug.LogWarning("Error: Unable to find the character with the Player tag. The camera will be disabled.");
                     }
                 }
             } else {
@@ -214,7 +214,7 @@ namespace Opsive.UltimateCharacterController.Camera
             if (m_Character != null) {
                 var characterLocomotion = m_Character.GetCachedComponent<UltimateCharacterLocomotion>();
                 if (characterLocomotion == null) {
-                    Debug.LogError($"Error: the character {m_Character} doesn't have the Ultimate Character Locomotion component.");
+                    Debug.LogWarning($"Error: the character {m_Character} doesn't have the Ultimate Character Locomotion component.");
                     m_Character = null;
                     return;
                 }
