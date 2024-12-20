@@ -25,22 +25,22 @@ public class EndGame : MonoBehaviour
     {
         int kills = PlayerPrefs.GetInt("kills");
         int baseScore = PlayerPrefs.GetInt("baseScore");
+        int score = PlayerPrefs.GetInt("score");
         // Beräkna bonuspoäng för kills
         int killBonus = kills * 20; // Varje kill ger 20 poäng
-        int totalScore = baseScore + killBonus;
+        int totalScore = baseScore + killBonus + score;
 
         // Coins och XP baserat på score
         int coins = (int)(totalScore * 0.1); // 10% av score omvandlas till coins
         int xp = (int)(totalScore * 0.2);    // 20% av score blir XP
 
-        // Uppdatera PlayerPrefs
-        PlayerPrefs.SetInt("score", totalScore);
-        PlayerPrefs.SetInt("coins", coins);
-        PlayerPrefs.SetInt("xp", xp);
-
         // Uppdatera UI
         ScoreText.text = $"Score: {totalScore}";
         Coins.text = coins.ToString();
         XP.text = xp.ToString();
+        PlayerPrefs.DeleteKey("dead");
+        PlayerPrefs.DeleteKey("kills");
+        PlayerPrefs.DeleteKey("score");
+        PlayerPrefs.DeleteKey("baseScore");
     }
 }

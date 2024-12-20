@@ -109,8 +109,6 @@ public class InGameData : MonoBehaviour
     {
         // Definiera poäng per runda
         int[] roundScores = { 100, 125, 175, 250, 500 }; // Poäng för varje runda
-
-        // Summera poäng för alla rundor upp till den nuvarande
         for (int i = 0; i < round && i < roundScores.Length; i++)
         {
             baseScore += roundScores[i];
@@ -170,6 +168,7 @@ public class InGameData : MonoBehaviour
         Cursor.visible = true;
         if (death > 0)
         {
+            endGame.CountScore();
             deathPanel.SetActive(true);
         }
         else
@@ -177,9 +176,6 @@ public class InGameData : MonoBehaviour
             endGame.CountScore();
             EndGamePanel.SetActive(true);
         }
-        PlayerPrefs.DeleteKey("dead");
-        PlayerPrefs.DeleteKey("kills");
-        PlayerPrefs.DeleteKey("score");
         Debug.Log("Game Over!");
     }
 }
